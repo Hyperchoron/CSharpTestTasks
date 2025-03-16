@@ -2,9 +2,34 @@
 {
     internal class Program
     {
+        private static string alphabet = "abcdefghijklmnopqrstuvwxyz";
+
         static void Main(string[] args)
         {
             string s = Console.ReadLine() ?? "";
+
+            bool panic = false;
+            foreach (char c in s)
+            {
+                if (alphabet.IndexOf(c) == -1)
+                {
+                    if (!panic)
+                    {
+                        Console.Write("Были введены неподходящие символы: ");
+
+                        panic = true;
+                    }
+
+                    Console.Write(c);
+                }
+            }
+
+            if (panic)
+            {
+                Console.WriteLine();
+
+                return;
+            }
 
             if ((s.Length & 1) == 0) // Количество чётное.
             {
