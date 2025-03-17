@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
 using System.Text;
 using System.Text.Json;
 
@@ -12,9 +13,21 @@ namespace CSharpTestTasks.Controllers
         private IConfiguration _config;
         private IConfigurationSection _blackList;
 
+        static int _processingsCount = 0;
+        int _maxProcessingsCount;
+
         public StringProcessingController(IConfiguration config) {
             _config = config;
-            _blackList = _config.GetSection("Settings").GetRequiredSection("BlackList");
+
+            _blackList = _config.GetSection("Settings").GetSection("BlackList");
+
+            try
+            {
+                _maxProcessingsCount = int.Parse(_config.GetSection("Settings").GetSection("ParallelLimit").Value);
+            } catch(Exception)
+            {
+                _maxProcessingsCount = 0;
+            }
         }
 
         private static string alphabet = "abcdefghijklmnopqrstuvwxyz";
@@ -22,6 +35,12 @@ namespace CSharpTestTasks.Controllers
         [HttpGet]
         public async Task<ActionResult<StringProcessingResult>> ProcessString(string s, SortMethod sortMethod)
         {
+            // Check for parallel connections
+            _processingsCount++;
+
+            if (_processingsCount > _maxProcessingsCount)
+                return StatusCode(503);
+
             StringProcessingResult results = new();
 
             // Check, if string is in black list
@@ -101,7 +120,8 @@ namespace CSharpTestTasks.Controllers
                 substringEnd--)
             { }
 
-            results.LongestSubstring = new string(newString).Substring(substringStart, substringEnd - substringStart + 1);
+            if (substringStart < substringEnd)
+                results.LongestSubstring = new string(newString).Substring(substringStart, substringEnd - substringStart + 1);
 
             // Sorting
 
@@ -143,6 +163,8 @@ namespace CSharpTestTasks.Controllers
             }
 
             results.CutString = new string(newString).Remove(symbolIndex, 1);
+
+            _processingsCount--;
 
             return results;
         }
