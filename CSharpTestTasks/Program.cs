@@ -90,6 +90,31 @@
 
             Console.Write("Подстрока с гласными в начале и конце: ");
             Console.WriteLine(newString, substringStart, substringEnd - substringStart + 1);
+
+            // Sorting
+
+            Console.WriteLine("Выберите метод сортировки:");
+            Console.WriteLine(" [1] - Быстрая сортировка (Quicksort);");
+            Console.WriteLine(" [2] - Сортировка деревом (Tree sort).");
+
+            Console.Write("[1, 2]: ");
+
+            string userInput = Console.ReadLine() ?? "";
+
+            switch (userInput)
+            {
+            case "1":
+                new QuickSort().Sort(newString);
+                break;
+            case "2":
+                new TreeSort().Sort(newString);
+                break;
+            default:
+                Console.WriteLine("Без сортировки");
+                break;
+            }
+
+            Console.WriteLine(newString);
         }
     }
 }
