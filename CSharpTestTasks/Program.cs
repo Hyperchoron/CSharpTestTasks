@@ -45,7 +45,7 @@
             else
             {
                 newString = new char[s.Length * 2];
-                
+
                 s.CopyTo(newString.AsSpan(0));
                 s.CopyTo(newString.AsSpan(s.Length));
 
@@ -53,6 +53,23 @@
             }
 
             Console.WriteLine(newString);
+
+            // Count codepoints
+
+            Dictionary<char, int> codepointCount = new Dictionary<char, int>();
+
+            foreach (char c in newString)
+            {
+                if (codepointCount.ContainsKey(c)) codepointCount[c]++;
+                else codepointCount[c] = 1;
+            }
+
+            Console.WriteLine("Количество вхождений каждого символа в обработанной строке:");
+
+            foreach ((char c, int count) in codepointCount)
+            {
+                Console.WriteLine($" - '{c}': {count}");
+            }
         }
     }
 }
