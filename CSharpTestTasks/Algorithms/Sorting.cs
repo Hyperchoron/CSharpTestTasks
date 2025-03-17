@@ -1,11 +1,11 @@
 ﻿namespace CSharpTestTasks.Algorithms
 {
-    internal interface ISortMethod<T>
+    public interface ISortMethod<T>
     {
         void Sort(T[] array);
     }
 
-    internal class QuickSort : ISortMethod<char>
+    public class QuickSort : ISortMethod<char>
     {
         public void Sort(char[] array) => Quicksort(array, 0, array.Length - 1);
 
@@ -47,7 +47,7 @@
         }
     }
 
-    internal class TreeSort : ISortMethod<char>
+    public class TreeSort : ISortMethod<char>
     {
         public void Sort(char[] array)
         {
