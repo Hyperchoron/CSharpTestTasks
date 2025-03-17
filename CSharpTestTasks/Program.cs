@@ -31,21 +31,28 @@
                 return;
             }
 
-            if ((s.Length & 1) == 0) // Количество чётное.
+            char[] newString;
+            if ((s.Length & 1) == 0)
             {
-                int substringLength = s.Length >> 1;
+                newString = new char[s.Length];
+                int substringLength = s.Length / 2;
 
-                string firstSubString = new string(s.Substring(0, substringLength).Reverse().ToArray());
-                string secondSubString = new string(s.Substring(substringLength, substringLength).Reverse().ToArray());
+                s.CopyTo(newString);
 
-                Console.WriteLine(firstSubString + secondSubString);
+                newString.AsSpan(0, substringLength).Reverse();
+                newString.AsSpan(substringLength, substringLength).Reverse();
             }
             else
             {
-                string reversedString = new string(s.Reverse().ToArray());
+                newString = new char[s.Length * 2];
+                
+                s.CopyTo(newString.AsSpan(0));
+                s.CopyTo(newString.AsSpan(s.Length));
 
-                Console.WriteLine(reversedString + s);
+                newString.AsSpan(0, s.Length).Reverse();
             }
+
+            Console.WriteLine(newString);
         }
     }
 }
