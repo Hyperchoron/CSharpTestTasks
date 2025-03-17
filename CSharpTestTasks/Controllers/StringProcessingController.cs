@@ -9,12 +9,27 @@ namespace CSharpTestTasks.Controllers
     [ApiController]
     public class StringProcessingController : ControllerBase
     {
+        private IConfiguration _config;
+        private IConfigurationSection _blackList;
+
+        public StringProcessingController(IConfiguration config) {
+            _config = config;
+            _blackList = _config.GetSection("Settings").GetRequiredSection("BlackList");
+        }
+
         private static string alphabet = "abcdefghijklmnopqrstuvwxyz";
 
         [HttpGet]
         public async Task<ActionResult<StringProcessingResult>> ProcessString(string s, SortMethod sortMethod)
         {
             StringProcessingResult results = new();
+
+            // Check, if string is in black list
+
+            if (_blackList.AsEnumerable().Any(kv => kv.Value == s))
+            {
+                return BadRequest("Это слово находится в чёрном списке");
+            }
 
             bool panic = false;
             StringBuilder errorMessageBuilder = new();
@@ -109,7 +124,7 @@ namespace CSharpTestTasks.Controllers
 
             try
             {
-                using (HttpResponseMessage response = await client.GetAsync($"http://www.randomnumberapi.com/api/v1.0/random?min=0&max={newString.Length}"))
+                using (HttpResponseMessage response = await client.GetAsync($"{_config["RandomApi"]}?min=0&max={newString.Length}"))
                 {
                     response.EnsureSuccessStatusCode();
 
