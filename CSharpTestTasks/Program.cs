@@ -70,6 +70,26 @@
             {
                 Console.WriteLine($" - '{c}': {count}");
             }
+
+            // Longest substring starting and ending with a vowel
+
+            int substringStart;
+            int substringEnd;
+
+            // Scan string for vowel from the left
+            for (substringStart = 0;
+                substringStart < newString.Length && !("aeiouy".Contains(newString[substringStart]));
+                substringStart++)
+            { }
+
+            // Scan string for vowel from the right
+            for (substringEnd = newString.Length - 1;
+                substringEnd >= 0 && !("aeiouy".Contains(newString[substringEnd]));
+                substringEnd--)
+            { }
+
+            Console.Write("Подстрока с гласными в начале и конце: ");
+            Console.WriteLine(newString, substringStart, substringEnd - substringStart + 1);
         }
     }
 }
