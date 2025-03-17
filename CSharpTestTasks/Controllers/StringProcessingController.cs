@@ -120,7 +120,8 @@ namespace CSharpTestTasks.Controllers
                 substringEnd--)
             { }
 
-            results.LongestSubstring = new string(newString).Substring(substringStart, substringEnd - substringStart + 1);
+            if (substringStart < substringEnd)
+                results.LongestSubstring = new string(newString).Substring(substringStart, substringEnd - substringStart + 1);
 
             // Sorting
 
