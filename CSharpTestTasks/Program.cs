@@ -1,10 +1,15 @@
-﻿namespace CSharpTestTasks
+﻿using System.Linq.Expressions;
+using System.Net;
+using System.Net.Http;
+using System.Text.Json;
+
+namespace CSharpTestTasks
 {
     internal class Program
     {
         private static string alphabet = "abcdefghijklmnopqrstuvwxyz";
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             string s = Console.ReadLine() ?? "";
 
@@ -115,6 +120,39 @@
             }
 
             Console.WriteLine(newString);
+
+            // Deleting random symbol by using some REST service
+            HttpClient client = new();
+
+            int symbolIndex;
+
+            try
+            {
+                using (HttpResponseMessage response = await client.GetAsync($"http://www.randomnumberapi.com/api/v1.0/random?min=0&max={newString.Length}"))
+                {
+
+                    response.EnsureSuccessStatusCode();
+
+                    var jsonResponse = await response.Content.ReadAsStringAsync();
+
+                    var jsonDoc = JsonDocument.Parse(jsonResponse);
+
+                    symbolIndex = jsonDoc.RootElement[0].GetInt32();
+                }
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Не получилось выполнить HTTP запрос.");
+
+                Random r = new Random();
+
+                symbolIndex = r.Next(0, newString.Length);
+            }
+
+
+            Console.WriteLine($"Удаление символа #{symbolIndex}");
+
+            Console.WriteLine(new string(newString).Remove(symbolIndex, 1));
         }
     }
 }
